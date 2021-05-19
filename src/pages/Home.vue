@@ -29,14 +29,6 @@
                         <v-list-item-title>用户管理</v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
-                <v-list-item link to="/category_list">
-                    <v-list-item-action>
-                        <v-icon>mdi-layers-triple</v-icon>
-                    </v-list-item-action>
-                    <v-list-item-content>
-                        <v-list-item-title>品类管理</v-list-item-title>
-                    </v-list-item-content>
-                </v-list-item>
                 <v-list-item link to="/order_list">
                     <v-list-item-action>
                         <v-icon>mdi-folder-multiple</v-icon>
@@ -55,6 +47,8 @@
         >
             <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
             <v-toolbar-title>品牌服饰空中商城管理平台</v-toolbar-title>
+            <v-spacer></v-spacer>
+            <v-btn text @click="logout">注销</v-btn>
         </v-app-bar>
 
         <v-content>
@@ -78,6 +72,32 @@
         data: () => ({
             drawer: null,
         }),
+        methods: {
+            logout() {
+                this.$cookie.set('userId','',{expires:'-1'});
+                localStorage.clear()
+                // this.$axios.post("/manager/user/logout.do")
+                //     .then(res=>{
+                //     console.log(res)
+                // })
+                this.$router.push("/login")
+            },
+            clearStorage() {
+                this.$cookie.remove("userId")
+                window.localStorage.clear();
+                localStorage.clear();
+                localStorage.removeItem("isLogin")
+            }
+        },
+        mounted() {
+            // window.onbeforeunload = function () {
+            //     localStorage.removeItem("isLogin")
+            //     this.$cookie.remove("userId")
+            // }
+        },
+        beforeDestroy() {
+
+        }
     }
 </script>
 

@@ -7,6 +7,7 @@ import VueCookie from 'vue-cookie'
 import axios from'axios'
 import qs from 'qs'
 import VueLazyload from "vue-lazyload";
+import echarts from 'echarts'
 
 Vue.config.productionTip = false;
 Vue.prototype.$qs = qs;
@@ -16,28 +17,28 @@ Vue.prototype.$axios = axios.create({
 });
 
 Vue.use(VueCookie);
-
+Vue.prototype.$echarts = echarts
 Vue.use(VueLazyload, {
   loading: '/imgs/loading-svg/loading-bars.svg'
 });
 
-// router.beforeEach((to, from, next)=> {
-//   let isLogin = localStorage.getItem("isLogin");
-//   isLogin = Boolean(Number(isLogin));
-//
-//   if(to.meta.requireAuth) {
-//     if(isLogin){
-//       next()
-//     } else {
-//       next({
-//         path: '/login',
-//         query: { redirect: to.fullPath}
-//       })
-//     }
-//   } else {
-//     next()
-//   }
-// });
+router.beforeEach((to, from, next)=> {
+  let isLogin = localStorage.getItem("isLogin");
+  isLogin = Boolean(Number(isLogin));
+
+  if(to.meta.requireAuth) {
+    if(isLogin){
+      next()
+    } else {
+      next({
+        path: '/login',
+        query: { redirect: to.fullPath}
+      })
+    }
+  } else {
+    next()
+  }
+});
 
 new Vue({
   router,

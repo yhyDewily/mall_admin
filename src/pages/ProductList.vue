@@ -13,6 +13,8 @@
                 style="width: 60%; margin-right: auto; margin-left: auto"
                 @click:append-outer="searchProduct"
         ></v-text-field>
+        <v-btn to="/product_edit" style="margin: 0 auto" color="success">新增商品</v-btn>
+        <v-btn v-show="search" style="float: right; margin-right: 20px" color="error" @click="resetList">重置</v-btn>
         <div class="product-list-table">
            <v-simple-table>
                 <template v-slot:default>
@@ -63,6 +65,7 @@
         components: {GCTip},
         data() {
             return{
+                search: false,
                 keyword: '',
                 initial: true,
                 search_action: 0,
@@ -74,7 +77,7 @@
                 totalNums: 0,
                 pagination: {
                     page: 1,
-                    itemsPerPage: 15,
+                    itemsPerPage: 10,
                     pageStart: 1,
                     pageStop: 5,
                     pageCount: 5,
@@ -94,6 +97,11 @@
                     this.productList = res.data.data.content;
                     this.pagination.itemsLength = res.data.data.totalPages;
                 })
+            },
+            resetList() {
+                this.search_action =0;
+                this.productList = [];
+                this.getProductList();
             },
             loadData(val){
                 if(this.search_action === "1" && this.keyword !== ""){
@@ -245,6 +253,7 @@
                        this.pagination.itemsLength = Math.floor(res.data.data.totalElements/10);
                    })
                }
+                this.search = true
             }
         },
 

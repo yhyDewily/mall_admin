@@ -142,37 +142,61 @@
             this.getUserList()
         },
         methods: {
+            assembleUserList(userList) {
+                for (let i =0;i<userList.length;i++) {
+                    let sex = ""
+                    let role = ""
+                    if(userList[i].sex === 1) sex = "男";
+                    else sex = "女"
+                    if(userList[i].role === 1) role = "管理员";
+                    else role = "普通用户"
+                    this.items.push({
+                        name:userList[i].username,
+                        id : userList[i].id,
+                        email :userList[i].email,
+                        question: userList[i].question,
+                        answer: userList[i].answer,
+                        phone: userList[i].phone,
+                        password: userList[i].password,
+                        sex: sex,
+                        role: role
+                    })
+                }
+            },
             nextPage () {
-                if (this.page + 1 <= this.numberOfPages) this.page += 1
+                if (this.page + 1 <= this.numberOfPages) this.page += 1;
+                this.$axios.post("/manager/user/list.do", this.$qs.stringify({
+                    userId:1,
+                    pageNum: this.page
+                })).then(res=>{
+                    console.log(res)
+                    this.items = [];
+                    this.numberOfPages = res.data.data.totalPages;
+                    let userList = res.data.data.content;
+                    this.assembleUserList(userList)
+                })
             },
             formerPage () {
                 if (this.page - 1 >= 1) this.page -= 1
+                this.$axios.post("/manager/user/list.do", this.$qs.stringify({
+                    userId:1,
+                    pageNum: this.page
+                })).then(res=>{
+                    console.log(res)
+                    this.items = [];
+                    this.numberOfPages = res.data.data.totalPages;
+                    let userList = res.data.data.content;
+                    this.assembleUserList(userList)
+                })
             },
             getUserList() {
                 this.$axios.post("/manager/user/list.do", this.$qs.stringify({
                     userId:1
                 })).then(res=>{
                     console.log(res)
-                    let userList = res.data.data.content;
                     this.numberOfPages = res.data.data.totalPages;
-                    for (let i =0;i<userList.length;i++) {
-                        let sex = ""
-                        let role = ""
-                        if(userList[i].sex === 1) sex = "男";
-                        else sex = "女"
-                        if(userList[i].role === 1) role = "管理员";
-                        else role = "普通用户"
-                        this.items.push({
-                            name:userList[i].username,
-                            id : userList[i].id,
-                            email :userList[i].email,
-                            question: userList[i].question,
-                            answer: userList[i].answer,
-                            phone: userList[i].phone,
-                            sex: sex,
-                            role: role
-                        })
-                    }
+                    let userList = res.data.data.content;
+                    this.assembleUserList(userList)
                 })
             },
             setAnotherUser(val) {
@@ -182,9 +206,15 @@
             setAdmin() {
                 this.$axios.post("/manager/user/add_admin.do", this.$qs.stringify({
                     userId: 1,
-                    another_user: this.another_user
+                    anotherUser: this.another_user
                 })).then(res=>{
-                    console.log(res)
+                    if(res.data.status === 0 ) {
+                        window.alert(res.data.msg)
+                        history.go(0);
+                        return;
+                    } else {
+                        window.alert(res.data.msg)
+                    }
                 })
                 this.dialog = false
             },

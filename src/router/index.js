@@ -19,11 +19,17 @@ Vue.use(VueRouter)
       name: 'Home',
       component: Home,
       redirect: '/deal_detail',
+      meta: {
+        requireAuth: true
+      },
       children:[
         {
           path: '/deal_detail',
           name: 'deal_detail',
-          component: DealDetail
+          component: DealDetail,
+          meta: {
+            requireAuth:true
+          }
         },
         {
           path: '/order_list',
@@ -34,7 +40,7 @@ Vue.use(VueRouter)
           }
         },
         {
-          path: '/order_detail',
+          path: '/order_detail/:orderNo',
           name: 'order_detail',
           component: OrderDetail,
           meta: {
@@ -81,12 +87,13 @@ Vue.use(VueRouter)
             requireAuth:true
           }
         },
-        {
-          path: '/login',
-          name: 'login',
-          component: Login
-        },
+
       ]
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: Login
     },
 ]
 

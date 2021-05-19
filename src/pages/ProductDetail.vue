@@ -158,6 +158,7 @@
                 class="mr4"
                 @click="changeEdit"
                 :disabled="!isEdit"
+                color="primary"
                 style="margin-right: 5px; margin-bottom: 10px">修改信息</v-btn>
             <v-btn
                     color="success"
@@ -180,7 +181,6 @@
                    width="300px"
             lazy-src="/imgs/loading-svg/loading-bars.svg">
             </v-img>
-            <v-btn style="margin-bottom: 9px; margin-top: 9px">修改主图片</v-btn>
             <v-divider style="margin-bottom: 10px; margin-top: 10px"></v-divider>
             <div class="product-image-title">
                 <p>商品副图片</p>
@@ -189,7 +189,7 @@
                 <v-img :src="item" height="300px" width="300px"
                        lazy-src="/imgs/loading-svg/loading-bars.svg"></v-img>
             </div>
-            <v-btn style=" margin-top: 9px; display: block">修改副图片</v-btn>
+
 
         </div>
     </div>
@@ -216,11 +216,11 @@
                 product_id: 0,
                 product_mainImage: '',
                 product_name: '',
-                product_price: '',
+                product_price: 0,
                 product_params: [],
                 product_subtitle: '',
                 product_status: 0,
-                product_stock:'',
+                product_stock:0,
                 product_subImages: [],
                 grand: [
                     1,2,5,6,7
@@ -267,7 +267,9 @@
                 this.isEditParams = true;
             },
             deleteParams(val) {
-                console.log(this.product_params[val])
+                if(val>-1) {
+                    this.product_params.splice(val, 1);
+                }
             },
             addParams() {
                 this.product_params.push(this.new_params);
@@ -279,6 +281,22 @@
                 this.isEditParams = false
             },
             submitChange(){
+                if(this.product_name === "") {
+                    window.alert("请输入商品名")
+                    return;
+                }
+                if(this.product_grandId === 0 ) {
+                    window.alert("请选择品牌")
+                    return;
+                }
+                if(this.product_categoryId === 0 ) {
+                    window.alert("请选择种类")
+                    return;
+                }
+                if(this.product_price === 0) {
+                    window.alert("请输入商品价格")
+                    return;
+                }
                 this.$axios.post("/manage/product/save.do", this.$qs.stringify({
                     userId: 1,
                     categoryId: this.product_categoryId,
